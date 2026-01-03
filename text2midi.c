@@ -288,6 +288,24 @@ static void ensure_dir(const char* path)
     exit(1);
 }
 
+static void get_pure_filename(char* dest, const char* path, int maxLen)
+{
+    if (path == NULL || dest == NULL) return;
+    
+    const char* lastSlash = strrchr(path, '/');
+    const char* lastBackslash = strrchr(path, '\\'); // for Window OS
+    const char* targetName = (lastSlash > lastBackslash) ? lastSlash : lastBackslash; // path or null
+
+    if (targetName) targetName++; // if there is slash, then the file name will be from the slash
+    else targetName = path; 
+    
+    strncpy(dest, targetName, maxLen - 1);  // copy the target name(file name) to destination
+    dest[maxLen - 1] = '\0';                // put null directly because strncpy doesn't do
+    
+    char* dot = strrchr(dest, '.');
+    if (dot != NULL) { *dot = '\0'; } // replace '.' to null to finish string
+}
+
 
 
 int main(int argc, char** argv) 
@@ -303,22 +321,15 @@ int main(int argc, char** argv)
     // const char* outPath = argv[2];
     
     ensure_dir("midis");
+
     char outPath[512];
-    const char* targetName = NULL;
-
-    if (argc == 2) 
-    { 
-        const char* lastSlash = strrchr(argv[1], '/');
-        const char* lastBackslash = strrchr(argv[1], '\\'); // for Window OS
-        targetName = (lastSlash > lastBackslash) ? lastSlash : lastBackslash;
-
-        if (targetName) targetName++; // if there is slash, then the file name will be from the slash
-        else targetName = argv[1]; 
-
-    }
-    else if (argc == 3)
-    { 
-        targetName = argv[2];
+    
+    char targetName[256];
+    if (argc == 2) {
+        get_pure_filename(targetName, argv[1], sizeof(targetName));
+    } 
+    else {
+        get_pure_filename(targetName, argv[2], sizeof(targetName));
     }
 
     snprintf(outPath, sizeof(outPath), "midis/%s.midi", targetName); 
