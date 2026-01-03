@@ -1,4 +1,8 @@
-/*
+/* VER1
+    Supports monophonic melodies only; 
+    chords and polyphonic structures are not supported.
+
+
 text2midi.c - minimal "text -> MIDI" compiler
 Build (MSYS2 UCRT64): gcc -O2 -Wall -Wextra -std=cii -o text2midi.exe text2midi.c
 
