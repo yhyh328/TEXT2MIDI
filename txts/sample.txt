@@ -1,8 +1,0 @@
-# simple melody
-tempo 120
-C4 200
-E4 200
-G4 400
-rest 200
-D4 400 80
-

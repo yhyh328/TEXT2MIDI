@@ -1,9 +1,12 @@
-### build
+### Supports monophonic melodies only; chords and polyphonic structures are not supported.
+
+
+## build
 ```shell
 make
 ```
 
-### write text file
+## write text file
 ```text
 [Example 1: minimal melody]
 
@@ -32,7 +35,7 @@ rest 75
 G4 150
 ```
 
-### run
+## run
 - name your midi file as your sample text file 
     ```shell
     text2midi.exe [sample text file]
