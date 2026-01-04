@@ -34,7 +34,7 @@ G4 300
 rest 75
 G4 150
 
-[Example 3: Distortion Guitar Riff in F (with Bb)]
+[Example 3: Distortion Guitar Riff]
 
 # tempo and resolution
 tempo 120
