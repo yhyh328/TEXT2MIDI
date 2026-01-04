@@ -33,6 +33,26 @@ E4 150
 G4 300
 rest 75
 G4 150
+
+[Example 3: Distortion Guitar Riff in F (with Bb)]
+
+# tempo and resolution
+tempo 120
+ppq 480
+
+# part / voice
+channel 0
+program 25   # Distortion Guitar (GM)
+
+# melody (F key)
+F4 200
+A4 200
+Bb4 200
+C5 400
+rest 200
+Bb4 200 90
+F4 400
+
 ```
 
 ## run
