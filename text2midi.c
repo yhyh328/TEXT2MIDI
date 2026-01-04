@@ -350,8 +350,17 @@ int main(int argc, char** argv)
     // Default setting
 
     int bpm       = 120;
+    
     int ppq       = 480;
-    int channel   = 0;  // MIDI channel (Acoustic Grand Piano)
+    
+    // MIDI channel (0–15).
+    // In practice, this represents a musical part / voice (e.g. lead, bass, drums).
+    // Instrument is assigned separately via Program Change.
+    int channel   = 0;      
+    
+    // MIDI program number (0–127), 0 = GM Acoustic Grand Piano
+    int program   = 0;  
+    
 
     Event* events = NULL;
     int evCount   = 0;
@@ -363,6 +372,7 @@ int main(int argc, char** argv)
     {   
         // Microseconds Per Quarter Note
         // us: Microseconds(10 ^ -6 seconds)
+        
         int usPerQN = (int)(60000000 / bpm);
         Event e     = {0};     // set each member as 0
         e.time      = 0;
@@ -375,6 +385,17 @@ int main(int argc, char** argv)
         e.data[5] = (u8)( usPerQN        & 0xFF);      // Microseconds Per Quarter Note (Least Significant Byte)
         e.len = 6;
         add_event(&events, &evCount, &evCap, e);
+    }
+
+    // Emit initial Program Change for the default part (channel) at time 0
+    {
+        Event e = (Event){0};
+        e.time = 0;
+        e.priority = 0;
+        e.data[0] = (u8)(0xC0 | (channel & 0x0F));
+        e.data[1] = (u8)(program & 0x7F);
+        e.len = 2;
+        add_event(&events, &evCount, &evCap, e); 
     }
     
     char line[512];
@@ -499,6 +520,34 @@ int main(int argc, char** argv)
             channel = ch;
             continue;
         }
+
+        if (strcmp(tok1, "program") == 0) {
+            if (!tok2) {
+                fprintf(stderr, "Line %d: program needs 0..127\n", lineNo);
+                return 1;
+            }
+        
+            int p = atoi(tok2);
+            if (p < 0 || p > 127) {
+                fprintf(stderr, "Line %d: program out of range (0..127)\n", lineNo);
+                return 1;
+            }
+        
+            program = p; // 0..127 (GM: 0 = Acoustic Grand Piano)
+        
+            // Emit Program Change at current time
+            {
+                Event e = (Event){0};
+                e.time = curTick;
+                e.priority = 0; // control first (before note-on at same tick)
+                e.data[0] = (u8)(0xC0 | (channel & 0x0F));
+                e.data[1] = (u8)(program & 0x7F);
+                e.len = 2;
+                add_event(&events, &evCount, &evCap, e);
+            }
+            continue;
+        }
+
 
         if (strcmp(tok1, "rest") == 0) {
             if (!tok2) { 
