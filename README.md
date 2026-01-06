@@ -53,6 +53,44 @@ rest 200
 Bb4 200 90
 F4 400
 
+
+[Example 4: Accidentals (sharp and flat)]
+
+# slow tempo for pitch clarity
+tempo 72
+ppq 480
+channel 0
+program 40    # Violin (GM)
+
+# phrase 1 (natural + sharp)
+C4   600
+D4   600
+F#4  600
+G4   600
+
+# phrase 2 (flat color)
+Bb4  600
+A4   600
+Ab4  600
+G4   600
+
+# phrase 3 (mixed accidentals)
+F#4  400
+G4   400
+Bb4  400
+A4   400
+
+# short ornamental turn
+G4   200
+Ab4  200
+G4   200
+F#4  200
+
+# cadence
+E4   800
+C4   800
+
+
 ```
 
 ## run
