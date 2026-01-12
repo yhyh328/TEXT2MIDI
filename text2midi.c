@@ -157,7 +157,17 @@ static void rtrim_inplace(char* s)
 static int is_blank_or_comment(const char* s)
 {
     while (*s && isspace((unsigned char)*s)) { s++; }
-    return (*s == 0 || *s == '#');
+    return (*s == '\0' || (*s == '/' && *s + 1 == '/'));
+}
+
+static void strip_inline_comment(char *s)
+{
+    for (char* p = s; p[0] && p[1]; ++p) {
+        if (p[0] == '/' && p[1] == '/') {
+            *p = '\0';
+            return;
+        }
+    }
 }
 
 // Note parsing: C, D, E, F, G, A, B with optional # or b, then octave int
@@ -434,6 +444,7 @@ int main(int argc, char** argv)
     while (fgets(line, sizeof(line), f)) {
 
         lineNo++;
+        strip_inline_comment(line);
         rtrim_inplace(line);
         char* s = ltrim(line);
         if (is_blank_or_comment(s)) continue;
