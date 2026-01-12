@@ -72,7 +72,7 @@ static void bb_init(ByteBuf* b) { b->buf = NULL; b->len = 0; b->cap = 0; }
 
 static void bb_free(ByteBuf* b) { free(b->buf); b->buf = NULL; b->len = b->cap = 0; }
 
-static void bb_reverse(ByteBuf* b, size_t add) 
+static void bb_reserve(ByteBuf* b, size_t add) 
 {
     size_t need = b->len + add;
     if (need <= b->cap) { return; }
@@ -88,7 +88,7 @@ static void bb_reverse(ByteBuf* b, size_t add)
 // Append raw bytes to the byte buffer
 static void bb_put(ByteBuf* b, const void* src, size_t n)
 {
-    bb_reverse(b, n);                   // Ensure there is space for n more bytes
+    bb_reserve(b, n);                   // Ensure there is space for n more bytes
     memcpy(b->buf + b->len, src, n);    // Copy n bytes from the source into the buffer at the current end
     b->len += n;                        // Advance the buffer length
 }
@@ -96,7 +96,7 @@ static void bb_put(ByteBuf* b, const void* src, size_t n)
 // Append a single byte to the byte buffer
 static void bb_put_u8(ByteBuf* b, u8 v)
 {
-    bb_reverse(b, 1);                  // Ensure there is space for i more byte
+    bb_reserve(b, 1);                  // Ensure there is space for i more byte
     b->buf[b->len++] = v;              // Write the byte and advance the buffer length
 }
 
