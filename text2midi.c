@@ -18,6 +18,7 @@ Output: Standard MIDI File (SMF) format 0, single track.
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
@@ -159,8 +160,6 @@ static int is_blank_or_comment(const char* s)
     return (*s == 0 || *s == '#');
 }
 
-
-
 // Note parsing: C, D, E, F, G, A, B with optional # or b, then octave int
 static int note_to_midi(const char* token, int* outMidi)
 {
@@ -199,6 +198,36 @@ static int note_to_midi(const char* token, int* outMidi)
     }
     *outMidi = midi;
     return 1;     // valid value
+}
+
+
+
+static int get_duration(char* token, int* outMs, int ppq) 
+{
+    if (!token || !*token) { 
+        return 0;
+    }
+    
+    size_t i = 0;
+    bool dotted = false;
+
+    if (*token == '.') { dotted = true; i = 1; }
+
+    // check unvalid vaue
+    for (size_t j = i; j < strlen(token); j++) {
+        char x = *(token + j);
+        int  y = (int)x;
+        if (y < 48 || 57 < y) return 0; 
+    } 
+
+    int val = atoi(token + i);
+    if (val <= 0) return 0;
+    
+    double ms = 4.0 / val * ppq;
+    if (dotted) ms *= 1.5;
+    
+    *outMs = (int)(ms + 0.5); // round
+    return 1;
 }
 
 
@@ -554,8 +583,12 @@ int main(int argc, char** argv)
                 fprintf(stderr, "Line %d: rest needs ms\n", lineNo); 
                 return 1; 
             }
-            int ms = atoi(tok2);
-            if (ms < 0) { 
+            int ms = 0;
+            if (!get_duration(tok2, &ms, ppq)) {
+                fprintf(stderr, "Line %d: error occurs while getting duration from token '%s'\n", lineNo, tok2);
+                return 1;
+            }
+            if (ms <= 0) { 
                 fprintf(stderr, "Line %d: rest ms must be >= 0\n", lineNo); 
                 return 1; 
             }
@@ -577,9 +610,13 @@ int main(int argc, char** argv)
             return 1;
         }
         
-        int ms = atoi(tok2);
+        int ms = 0;
+        if (!get_duration(tok2, &ms, ppq)) {
+            fprintf(stderr, "Line %d: error occurs while getting duration from token '%s'\n", lineNo, tok2);
+            return 1;
+        }
         if (ms <= 0) { 
-            fprintf(stderr, "Line %d: duration must be > 0\n", lineNo); 
+            fprintf(stderr, "Line %d: rest ms must be >= 0\n", lineNo); 
             return 1; 
         }
         
