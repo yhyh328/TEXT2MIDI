@@ -212,16 +212,16 @@ static int note_to_midi(const char* token, int* outMidi)
 
 
 
-static int get_duration(char* token, int* outMs, int ppq) 
+static int get_ms(char* token, int* outMs, int bpm) 
 {
-    if (!token || !*token) { 
-        return 0;
-    }
+    if (!token || !*token) return 0;
     
     size_t i = 0;
-    bool dotted = false;
+    bool triplet = false;
+    bool dotted  = false;
 
-    if (*token == '.') { dotted = true; i = 1; }
+    if (*token + i == ',') { triplet = true; ++i; }
+    if (*token + i == '.') { dotted  = true; ++i; }
 
     // check unvalid vaue
     for (size_t j = i; j < strlen(token); j++) {
@@ -233,9 +233,11 @@ static int get_duration(char* token, int* outMs, int ppq)
     int val = atoi(token + i);
     if (val <= 0) return 0;
     
-    double ms = 4.0 / val * ppq;
-    if (dotted) ms *= 1.5;
-    
+    double ms = (4.0 / (double)val) * 60000.0 / (double)bpm;
+    if (triplet)  ms *= (2.0 / 3.0);
+    if (dotted)   ms *= 1.5;
+    ms = (ms < 1.0) ? 1.0 : ms;
+
     *outMs = (int)(ms + 0.5); // round
     return 1;
 }
@@ -595,7 +597,7 @@ int main(int argc, char** argv)
                 return 1; 
             }
             int ms = 0;
-            if (!get_duration(tok2, &ms, ppq)) {
+            if (!get_ms(tok2, &ms, bpm)) {
                 fprintf(stderr, "Line %d: error occurs while getting duration from token '%s'\n", lineNo, tok2);
                 return 1;
             }
@@ -622,7 +624,7 @@ int main(int argc, char** argv)
         }
         
         int ms = 0;
-        if (!get_duration(tok2, &ms, ppq)) {
+        if (!get_ms(tok2, &ms, bpm)) {
             fprintf(stderr, "Line %d: error occurs while getting duration from token '%s'\n", lineNo, tok2);
             return 1;
         }
