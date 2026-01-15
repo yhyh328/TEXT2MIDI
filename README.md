@@ -1,5 +1,5 @@
 ### Supports monophonic melodies only; chords and polyphonic structures are not supported.
-
+### This project currently targets MIDI 1.0
 
 ## build
 ```shell
