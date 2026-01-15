@@ -272,6 +272,7 @@ A5    4
 B5    8
 C6    .2
 rest  4
+```
 
 ## run
 - name your midi file as your sample text file 
