@@ -1,7 +1,9 @@
 /* VER1
+    
     Supports monophonic melodies only; 
     chords and polyphonic structures are not supported.
-
+    
+    This project currently targets MIDI 1.0
 
 text2midi.c - minimal "text -> MIDI" compiler
 Build (MSYS2 UCRT64): gcc -O2 -Wall -Wextra -std=cii -o text2midi.exe text2midi.c
@@ -18,7 +20,6 @@ Output: Standard MIDI File (SMF) format 0, single track.
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
