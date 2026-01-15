@@ -462,38 +462,6 @@ int main(int argc, char** argv)
         char* s = ltrim(line);
         if (is_blank_or_comment(s)) continue;
 
-
-        /*
-            User text examples
-            
-            [Example 1: minimal melody]
-            
-            # tempo in BPM
-            tempo 120
-            
-            # simple melody
-            C4 200
-            E4 200
-            G4 400
-            rest 200
-            D4 400 80
-            
-            
-            [Example 2: advanced timing control]
-            
-            # higher timing resolution
-            ppq 960
-            tempo 90
-            channel 1
-            
-            C4 150
-            E4 150
-            G4 300
-            rest 75
-            G4 150
-        */         
-
-
         // Split the line into tokens separated by space or tab
         // strtok() modifies the input string by inserting '\0' at delimiters
 
