@@ -213,33 +213,43 @@ static int note_to_midi(const char* token, int* outMidi)
 
 
 
-static int get_ms(char* token, int* outMs, int bpm) 
+static int note_to_ms(char* token, int* outMs, int bpm) 
 {
     if (!token || !*token) return 0;
     
     size_t i = 0;
-    bool triplet = false;
-    bool dotted  = false;
+    double tuplet  = 2.0; // 2.0 means no tuplet
+    double dotted  = 1.0;
 
-    if (*token + i == ',') { triplet = true; ++i; }
-    if (*token + i == '.') { dotted  = true; ++i; }
+    if (*(token + i) == ',') {
+        ++i; errno = 0;
+        if (*(token + i) == '\0' || 
+            !isdigit((unsigned char)*(token + i))) return 0;
+        char *endp = NULL;
+        long val = strtol(token + i, &endp, 10);
+        if (errno != 0 || endp == token || val <= 0) return 0;
+        tuplet = (double)val;
+        i = (size_t)(endp - token);
+        if (*(token + i++) != ',') return 0;
+    }
 
-    // check unvalid vaue
-    for (size_t j = i; j < strlen(token); j++) {
-        char x = *(token + j);
-        int  y = (int)x;
-        if (y < 48 || 57 < y) return 0; 
-    } 
+    if (*(token + i) == '.') { dotted = 1.5; ++i; }
+
+    //check unvalid value
+    size_t len = strlen(token);
+    for (size_t j = i + 1; j < len; j++) {
+        unsigned char c =(unsigned char)*(token + j);
+        if (!isdigit(c)) return 0;
+    }
 
     int val = atoi(token + i);
     if (val <= 0) return 0;
     
     double ms = (4.0 / (double)val) * 60000.0 / (double)bpm;
-    if (triplet)  ms *= (2.0 / 3.0);
-    if (dotted)   ms *= 1.5;
+    ms *= (2.0 / tuplet) * dotted;
     ms = (ms < 1.0) ? 1.0 : ms;
 
-    *outMs = (int)(ms + 0.5); // round
+    *outMs = (int)(ms + 0.5); // make it round
     return 1;
 }
 
@@ -598,7 +608,7 @@ int main(int argc, char** argv)
                 return 1; 
             }
             int ms = 0;
-            if (!get_ms(tok2, &ms, bpm)) {
+            if (!note_to_ms(tok2, &ms, bpm)) {
                 fprintf(stderr, "Line %d: error occurs while getting duration from token '%s'\n", lineNo, tok2);
                 return 1;
             }
@@ -625,7 +635,7 @@ int main(int argc, char** argv)
         }
         
         int ms = 0;
-        if (!get_ms(tok2, &ms, bpm)) {
+        if (!note_to_ms(tok2, &ms, bpm)) {
             fprintf(stderr, "Line %d: error occurs while getting duration from token '%s'\n", lineNo, tok2);
             return 1;
         }
