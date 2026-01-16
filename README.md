@@ -64,46 +64,46 @@ program 30   # Distortion Guitar (GM)
 
 
 
-G#3 ,3,8   // triplet
-C#4 ,3,8
-E4 ,3,8
-G#3 ,3,8
-C#4 ,3,8
-E4 ,3,8
-G#3 ,3,8
-C#4 ,3,8
-E4 ,3,8
-G#3 ,3,8
-C#4 ,3,8
-E4 ,3,8
+G#3 ,3,4   // divide one quarter note into three equal parts (triplet)
+C#4 ,3,4
+E4 ,3,4
+G#3 ,3,4
+C#4 ,3,4
+E4 ,3,4
+G#3 ,3,4
+C#4 ,3,4
+E4 ,3,4
+G#3 ,3,4
+C#4 ,3,4
+E4 ,3,4
 
-G#3 ,3,8
-C#4 ,3,8
-E4 ,3,8
-G#3 ,3,8
-C#4 ,3,8
-E4 ,3,8
-G#3 ,3,8
-C#4 ,3,8
-E4 ,3,8
-G#3 ,3,8
-C#4 ,3,8
-E4 ,3,8
+G#3 ,3,4
+C#4 ,3,4
+E4 ,3,4
+G#3 ,3,4
+C#4 ,3,4
+E4 ,3,4
+G#3 ,3,4
+C#4 ,3,4
+E4 ,3,4
+G#3 ,3,4
+C#4 ,3,4
+E4 ,3,4
 
-A3 ,3,8
-C#4 ,3,8
-E4 ,3,8
-A3 ,3,8
-C#4 ,3,8
-E4 ,3,8
-A3 ,3,8
-D4 ,3,8
-F#4 ,3,8
-A3 ,3,8
-D4 ,3,8
-F#4 ,3,8
+A3 ,3,4
+C#4 ,3,4
+E4 ,3,4
+A3 ,3,4
+C#4 ,3,4
+E4 ,3,4
+A3 ,3,4
+D4 ,3,4
+F#4 ,3,4
+A3 ,3,4
+D4 ,3,4
+F#4 ,3,4
 
-G#3 ,3,8
+G#3 ,3,4
 
 
 [Example 4]
@@ -136,14 +136,16 @@ A3   8
 C#4 .4
 E4   8
 
-D4  16
-C#4 16
-B3  .4
-B3   4
-C#4 ,3,16
-D4  ,3,16
-E4  ,3,16
-E#4 ,3,16
+D4   16
+C#4  16
+B3   .4
+B3    4
+// sixtennth-note sextuplet for one quarter note
+C#4  ,6,4   
+D4   ,6,4
+E4   ,6,4
+E#4  ,6,4
+rest ,3,4
 
 F#4 .4
 B4   8
@@ -177,22 +179,20 @@ D#5   8
 A4   16
 G#4  16
 F#4   .4  // need update code to tie here
-
-// This design choice ensures that the entire tuplet spans exactly two quarter notes (PPQ × 2),
-// allowing the passage to align cleanly with the internal timing grid used by the MIDI generator.
-F#4    ,13,4     // need update code to tie here
-G#4    ,13,4
-A4     ,13,4
-B4     ,13,4
-C#5    ,13,4
-D#5    ,13,4
-E#5    ,13,4
-F#5    ,13,4
-G#5    ,13,4
-A5     ,13,4
-B5     ,13,4
-C#6    ,13,4
-D#6    ,13,4
+// thirteentuplet for one half note
+F#4    ,13,2     // need update code to tie here
+G#4    ,13,2
+A4     ,13,2
+B4     ,13,2
+C#5    ,13,2
+D#5    ,13,2
+E#5    ,13,2
+F#5    ,13,2
+G#5    ,13,2
+A5     ,13,2
+B5     ,13,2
+C#6    ,13,2
+D#6    ,13,2
 
 E6   4
 E6   16   // need update code to tie here
@@ -216,10 +216,7 @@ E5   16
 C#5  16
 E5   16
 B4   .8 // need update code to tie here
-
-
-// This design choice ensures that the entire tuplet spans exactly a quarter note (PPQ),
-// allowing the passage to align cleanly with the internal timing grid used by the MIDI generator.
+// nontuplet for one quarter note
 B4  ,9,4 // need update code to tie here
 C#5 ,9,4
 D#5 ,9,4
@@ -250,10 +247,7 @@ C#5 16
 B4  16
 D5  16
 A4  .8 // need update code to tie here
-
-
-// This design choice ensures that the entire tuplet spans exactly a quarter note (PPQ),
-// allowing the passage to align cleanly with the internal timing grid used by the MIDI generator.
+// dectuplet for one quarter note
 A4  ,10,4 // need update code to tie here
 B4  ,10,4
 C#5  ,10,4

@@ -218,7 +218,7 @@ static int note_to_ms(char* token, int* outMs, int bpm)
     if (!token || !*token) return 0;
     
     size_t i = 0;
-    double tuplet  = 2.0; // 2.0 means no tuplet
+    double tuplet  = 1.0; // 1.0 means no tuplet
     double dotted  = 1.0;
 
     if (*(token + i) == ',') {
@@ -246,7 +246,7 @@ static int note_to_ms(char* token, int* outMs, int bpm)
     if (val <= 0) return 0;
     
     double ms = (4.0 / (double)val) * 60000.0 / (double)bpm;
-    ms *= (2.0 / tuplet) * dotted;
+    ms *= (1.0 / tuplet) * dotted;
     ms = (ms < 1.0) ? 1.0 : ms;
 
     *outMs = (int)(ms + 0.5); // make it round
